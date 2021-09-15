@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 from tqdm import tqdm 
 import sys
-import wget 
 
 def main(cwd=None):
 
@@ -107,35 +106,29 @@ def main(cwd=None):
 			print(j[0])
 			url = j[0]
 
-			def bar_custom(current, total, width=80):
-				print("Downloading : %d%% [%d / %d] bytes" % (current / total * 100, current, total))
+			home_path = Path.home()
+			sub_path = "tmp"
 
-			# wget.download(url, bar=bar_custom)
-			wget.download(url)
+			filesize = int(requests.head(url).headers["Content-Length"])
+			filename = os.path.basename(url)
 
-			# home_path = Path.home()
-			# sub_path = "tmp"
+			os.makedirs(os.path.join(home_path, sub_path), exist_ok=True)
 
-			# filesize = int(requests.head(url).headers["Content-Length"])
-			# filename = os.path.basename(url)
-
-			# os.makedirs(os.path.join(home_path, sub_path), exist_ok=True)
-
-			# dl_path = os.path.join(home_path, sub_path, filename)
-			# chunk_size = 1024
+			dl_path = os.path.join(home_path, sub_path, filename)
+			chunk_size = 1024
 
 
-			# with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
-			#         unit="B",  # unit string to be displayed.
-			#         unit_scale=True,  # let tqdm to determine the scale in kilo, mega..etc.
-			#         unit_divisor=1024,  # is used when unit_scale is true
-			#         total=filesize,  # the total iteration.
-			#         file=sys.stdout,  # default goes to stderr, this is the display on console.
-			#         desc=filename  # prefix to be displayed on progress bar.
-			# ) as progress:
-			#     for chunk in r.iter_content(chunk_size=chunk_size):
-			#         datasize = f.write(chunk)
-			#         progress.update(datasize)
+			with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
+			        unit="B",  # unit string to be displayed.
+			        unit_scale=True,  # let tqdm to determine the scale in kilo, mega..etc.
+			        unit_divisor=1024,  # is used when unit_scale is true
+			        total=filesize,  # the total iteration.
+			        file=sys.stdout,  # default goes to stderr, this is the display on console.
+			        desc=filename  # prefix to be displayed on progress bar.
+			) as progress:
+			    for chunk in r.iter_content(chunk_size=chunk_size):
+			        datasize = f.write(chunk)
+			        progress.update(datasize)
 
 		# resp = json.loads(r.text)
 		# print(resp['browser_download_url'])
