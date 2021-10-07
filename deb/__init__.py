@@ -2,6 +2,8 @@ import argparse
 import json 
 import requests
 
+__version__ = "1.0.0"
+
 def show_deb(deb_name:str):
     r = requests.get(f"https://debhub.herokuapp.com/show/{deb_name}")
     resp = json.loads(r.text)

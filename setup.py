@@ -1,29 +1,33 @@
-import setuptools
-from deb.a import __version__
+from setuptools import setup
+from deb import __version__
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+with open("README.md", "r") as readme_file:
+    readme = readme_file.read()
 
-setuptools.setup(
+setup(
     name="deb",
     version=__version__,
     author="Jak Bin",
+    author_email="jakbin4747@gmail.com",
     description="download and install deb packages from github",
-    long_description=long_description,
+    long_description=readme,
     long_description_content_type="text/markdown",
+    license="MIT License",
     url="https://github.com/jakbin/anonfile-upload",
+    python_requires=">=3",
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: Apache Software License",
+        "Natural Language :: English",
         "Operating System :: OS Independent",
     ],
-    keywords='deb packages github',
-
+    keywords='deb,packages,github',
     packages=["deb"],
-
+    name="pysondb",
     entry_points={
         "console_scripts":[
             "deb = deb:main"
         ]
-    }
+    },
+    zip_safe=False,
 )

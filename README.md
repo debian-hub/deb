@@ -1,6 +1,6 @@
-# anonfile-upload-script
+# deb
 
-download and install deb packages from github.
+## Download and install latest version of deb packages from github.
 
 ![GitHub Contributors](https://img.shields.io/github/contributors/jakbin/deb)
 
@@ -9,8 +9,6 @@ download and install deb packages from github.
 ![GitHub last commit](https://img.shields.io/github/last-commit/jakbin/deb)
 
 ![Python 3.6](https://img.shields.io/badge/python-3.6-yellow.svg)
-
-![Pypi 20.3](https://img.shields.io/badge/pypi-20.3-orange.svg)
 
 
 ## Installation
@@ -22,5 +20,6 @@ pip3 install deb
 ## Usage
 
 ```bash
+deb show {package_name}
 deb install {package_name}
 ```
