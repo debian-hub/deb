@@ -1,37 +1,90 @@
 import argparse
-import json 
+import json
 import requests
 
 __version__ = "1.0.0"
+url = "http://127.0.0.1:5000"
 
 def show_deb(deb_name:str):
-    r = requests.get(f"https://debhub.herokuapp.com/show/{deb_name}")
+    r = requests.get(f"{url}/show/{deb_name}")
     resp = json.loads(r.text)
 
     if resp['status']:
-        pass
+        pkg = resp['data']['Name']
+        version = resp['data']['Version']
+        architecture = resp['data']['Architecture']
+        section = resp['data']['Section']
+        homepage = resp['data']['HomePage']
+        description = resp['data']['Description']
+
+        print(f"Package: {pkg}")
+        print(f"Version: {version}")
+        print(f"Architecture: {architecture}")
+        print(f"Section: {section}")
+        print(f"Homepage: {homepage}")
+        print(f"Description: {description}")
     else:
-        message = resp['error']['message']
-        errtype = resp['error']['type']
-        print(f'[ERROR] {message}\n{errtype}')
+        message = resp['error']
+        print(f'[ERROR] {message}')
 
 def install_deb(deb_name:str):
-    r = requests.get(f"https://debhub.herokuapp.com/install/{deb_name}")
+    r = requests.get(f"{url}/install/{deb_name}")
     resp = json.loads(r.text)
 
     if resp['status']:
-        pass
+        pkg = resp['data']['Name']
+        version = resp['data']['Version']
+        url = resp['data']['url']
+
+        home_path = Path.home()
+        sub_path = "tmp/deb"
+
+        filesize = int(requests.head(url).headers["Content-Length"])
+        filename = os.path.basename(url)
+        try:
+            os.makedirs(os.path.join(home_path, sub_path), exist_ok=True)
+        except OSError as error:
+            print(error)
+            raise
+        dl_path = os.path.join(home_path, sub_path, filename)
+        # print(dl_path)
+        chunk_size = 1024
+
+        with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
+                unit="B",  # unit string to be displayed.
+                unit_scale=True,  # let tqdm to determine the scale in kilo, mega..etc.
+                unit_divisor=1024,  # is used when unit_scale is true
+                total=filesize,  # the total iteration.
+                file=sys.stdout,  # default goes to stderr, this is the display on console.
+                desc=filename  # prefix to be displayed on progress bar.
+        ) as progress:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                datasize = f.write(chunk)
+                progress.update(datasize)
+
+        if os.geteuid() == 0:
+            os.system(f"dpkg -i {dl_path}") 
+        else:
+            os.system(f"sudo dpkg -i {dl_path}")
+
+        if confirm(f"Do you want delete {filename}", default=True):
+            try:
+                os.remove(dl_path)
+            except OSError as error:
+                print(error)
     else:
-        message = resp['error']['message']
-        errtype = resp['error']['type']
-        print(f'[ERROR] {message}\n{errtype}')
+        message = resp['error']
+        print(f'[ERROR] {message}')
+
+def version():
+    return __version__
 
 example_uses = '''example:
    deb show package_name
    deb install package_name'''
 
 def set_parser(argv = None):
-    parser = argparse.ArgumentParser(argv, description="find and install deb packages", epilog=example_uses, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description="find and install deb packages", epilog=example_uses, formatter_class=argparse.RawDescriptionHelpFormatter)
     subparsers = parser.add_subparsers(dest="command")
 
     install_parser = subparsers.add_parser("install", help="install deb package")
@@ -40,12 +93,19 @@ def set_parser(argv = None):
     show_parser = subparsers.add_parser("show", help="Show the details of package")
     show_parser.add_argument("package_name", help="name of the package")
 
-    args = parser.parse_args()
+    parser.add_argument('-v',"--version",
+                            action="store_true",
+                            dest="version",
+                            help="check version of sachet")
+
+    args = parser.parse_args(argv)
 
     if args.command == "install":
         return install_deb(args.package_name)
     elif args.command == "show":
         return show_deb(args.package_name)
+    elif args.version:
+        return version()
     else:
         print("run deb -h for help")
 
