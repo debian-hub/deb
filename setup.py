@@ -13,8 +13,9 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     license="MIT License",
-    url="https://github.com/jakbin/anonfile-upload",
+    url="https://github.com/jakbin/deb",
     python_requires=">=3",
+    install_requires=["tqdm"],
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: Apache Software License",

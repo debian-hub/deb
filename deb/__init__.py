@@ -1,6 +1,10 @@
 import argparse
 import json
 import requests
+import os
+from pathlib import Path
+import sys
+import tqdm
 
 __version__ = "1.0.0"
 url = "http://127.0.0.1:5000"
@@ -28,6 +32,7 @@ def show_deb(deb_name:str):
         print(f'[ERROR] {message}')
 
 def install_deb(deb_name:str):
+    global url
     r = requests.get(f"{url}/install/{deb_name}")
     resp = json.loads(r.text)
 
@@ -67,7 +72,9 @@ def install_deb(deb_name:str):
         else:
             os.system(f"sudo dpkg -i {dl_path}")
 
-        if confirm(f"Do you want delete {filename}", default=True):
+        yes = {'yes','y','ye',''}
+        choice = input(f"Do you want delete {filename} [Y/n]: ").lower()
+        if choice in yes:
             try:
                 os.remove(dl_path)
             except OSError as error:
