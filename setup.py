@@ -24,7 +24,6 @@ setup(
     ],
     keywords='deb,packages,github',
     packages=["deb"],
-    name="pysondb",
     entry_points={
         "console_scripts":[
             "deb = deb:main"
