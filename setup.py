@@ -5,7 +5,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="deb",
+    name="pdeb",
     version=__version__,
     author="Jak Bin",
     author_email="jakbin4747@gmail.com",

@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-pip3 install deb
+pip3 install pdeb
 ```
 
 ## Usage
@@ -22,3 +22,7 @@ deb show {package_name}
 
 deb install {package_name}
 ```
+
+### For discussion 
+
+* Join Telegram channel [Here](https://t.me/debhub1)
