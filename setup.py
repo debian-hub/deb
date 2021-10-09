@@ -5,11 +5,11 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="pdeb",
+    name="debi",
     version=__version__,
     author="Jak Bin",
     author_email="jakbin4747@gmail.com",
-    description="download and install deb packages from github",
+    description="download and install deb packages from github and other resources",
     long_description=readme,
     long_description_content_type="text/markdown",
     license="MIT License",
@@ -22,7 +22,7 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
     ],
-    keywords='deb,packages,github',
+    keywords='deb,debian,github',
     packages=["deb"],
     entry_points={
         "console_scripts":[

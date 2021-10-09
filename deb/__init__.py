@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 from tqdm import tqdm
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 url = "https://debhub.herokuapp.com"
 
 def show_deb(deb_name:str):

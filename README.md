@@ -1,6 +1,6 @@
 # deb
 
-## Download and install latest version of deb packages from github.
+## Download and install latest version of deb packages from github and other resources.
 
  ![GitHub Contributors](https://img.shields.io/github/contributors/jakbin/deb)
  ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/jakbin/deb)
@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-pip3 install pdeb
+pip3 install debi
 ```
 
 ## Usage
