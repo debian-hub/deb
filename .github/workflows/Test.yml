@@ -5,7 +5,7 @@ on:
     paths:
       - "**.py"
       - "**.txt"
-      - ".github/workflows/Build.yml"
+      - ".github/workflows/Test.yml"
 
 jobs:
   deploy:
