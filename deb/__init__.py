@@ -4,7 +4,7 @@ import requests
 import os
 from pathlib import Path
 import sys
-import tqdm
+from tqdm import tqdm
 
 __version__ = "1.0.0"
 url = "https://debhub.herokuapp.com"
