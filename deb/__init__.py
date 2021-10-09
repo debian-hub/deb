@@ -7,7 +7,7 @@ import sys
 import tqdm
 
 __version__ = "1.0.0"
-url = "http://127.0.0.1:5000"
+url = "https://debhub.herokuapp.com"
 
 def show_deb(deb_name:str):
     r = requests.get(f"{url}/show/{deb_name}")
