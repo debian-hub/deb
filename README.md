@@ -18,6 +18,8 @@ pip3 install debi
 ## Usage
 
 ```bash
+deb show all
+
 deb show {package_name}
 
 deb install {package_name}
