@@ -6,8 +6,14 @@ from pathlib import Path
 import sys
 from tqdm import tqdm
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 url = "https://debhub.herokuapp.com"
+
+def show_all():
+    r = requests.get(f"{url}/show/all")
+    resp = json.loads(r.text)
+    for r in resp:
+        print(f"{r['name']} {r['version']} {r['architecture']} {r['category']}")
 
 def show_deb(deb_name:str):
     r = requests.get(f"{url}/show/{deb_name}")
@@ -87,6 +93,7 @@ def version():
     return __version__
 
 example_uses = '''example:
+   deb show all
    deb show package_name
    deb install package_name'''
 
@@ -110,7 +117,10 @@ def set_parser(argv = None):
     if args.command == "install":
         return install_deb(args.package_name)
     elif args.command == "show":
-        return show_deb(args.package_name)
+        if args.package_name == "all":
+            return show_all()
+        else:
+            return show_deb(args.package_name)
     elif args.version:
         return version()
     else:
