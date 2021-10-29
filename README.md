@@ -27,4 +27,6 @@ deb install {package_name}
 
 ### For discussion 
 
-* Join Telegram channel [Here](https://t.me/debhub1)
+* Join Telegram Channel [![Telegram](https://img.shields.io/badge/@debhub1-%23F7DF1C?style=flat-square&logo=telegram&logoColor=white)](https://t.me/debhub1)
+
+* Join Telegram Group [![Telegram](https://img.shields.io/badge/@debhub2-%23F7DF1C?style=flat-square&logo=telegram&logoColor=white)](https://t.me/debhub2)
