@@ -2,6 +2,10 @@
 
 ## Download and install latest version of deb packages from github and other resources.
 
+ [![PyPI version](https://badge.fury.io/py/debi.svg)](https://pypi.org/project/debi/)
+ [![Downloads](https://static.pepy.tech/personalized-badge/debi?period=month&units=none&left_color=green&right_color=blue&left_text=Downloads)](https://pepy.tech/project/debi)
+ [![Downloads](https://pepy.tech/badge/debi/month)](https://pepy.tech/project/debi)
+ [![Downloads](https://static.pepy.tech/personalized-badge/debi?period=total&units=international_system&left_color=green&right_color=blue&left_text=Total%20Downloads)](https://pepy.tech/project/debi)
  ![GitHub Contributors](https://img.shields.io/github/contributors/jakbin/deb)
  ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/jakbin/deb)
  [![Test](https://github.com/jakbin/deb/actions/workflows/Test.yml/badge.svg)](https://github.com/jakbin/deb/actions/workflows/Test.yml)
