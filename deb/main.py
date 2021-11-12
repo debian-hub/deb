@@ -17,9 +17,14 @@ def show_all():
     except ConnectionError:
         print("[ERROR]: No internet connection")
         return 1
-    resp = json.loads(r.text) # add json.decoder.JSONDecodeError exception handling
-    for r in resp:
-        print(f"{r['name']} {r['version']} {r['architecture']} {r['category']}")
+
+    if r.status_code == 200 or r.status_code == 404:
+        resp = json.loads(r.text)
+
+        for r in resp:
+            print(f"{r['name']} {r['version']} {r['architecture']} {r['category']}")
+    else:
+        print(f'[ERROR]: {r.reason}')
 
 def show_deb(deb_name:str):
     try:
@@ -27,25 +32,29 @@ def show_deb(deb_name:str):
     except ConnectionError:
         print("[ERROR]: No internet connection")
         return 1
-    resp = json.loads(r.text) # add json.decoder.JSONDecodeError exception handling
 
-    if resp['status']:
-        pkg = resp['data']['Name']
-        version = resp['data']['Version']
-        architecture = resp['data']['Architecture']
-        section = resp['data']['Section']
-        homepage = resp['data']['HomePage']
-        description = resp['data']['Description']
+    if r.status_code == 200 or r.status_code == 404:
+        resp = json.loads(r.text)
 
-        print(f"Package: {pkg}")
-        print(f"Version: {version}")
-        print(f"Architecture: {architecture}")
-        print(f"Section: {section}")
-        print(f"Homepage: {homepage}")
-        print(f"Description: {description}")
-    elif resp['status'] is False:
-        message = resp['error']
-        print(f'[ERROR]: {message}')
+        if resp['status']:
+            pkg = resp['data']['Name']
+            version = resp['data']['Version']
+            architecture = resp['data']['Architecture']
+            section = resp['data']['Section']
+            homepage = resp['data']['HomePage']
+            description = resp['data']['Description']
+
+            print(f"Package: {pkg}")
+            print(f"Version: {version}")
+            print(f"Architecture: {architecture}")
+            print(f"Section: {section}")
+            print(f"Homepage: {homepage}")
+            print(f"Description: {description}")
+        elif resp['status'] is False:
+            message = resp['error']
+            print(f'[ERROR]: {message}')
+    else:
+        print(f'[ERROR]: {r.reason}')
 
 def install_deb(deb_name:str):
     global url
@@ -54,60 +63,63 @@ def install_deb(deb_name:str):
     except ConnectionError:
         print("[ERROR]: No internet connection")
         return 1
-    resp = json.loads(r.text) # add json.decoder.JSONDecodeError exception handling
 
-    if resp['status']:
-        pkg = resp['data']['Name']
-        version = resp['data']['Version']
-        url = resp['data']['url']
+    if r.status_code == 200 or r.status_code == 404:
+        resp = json.loads(r.text)
 
-        home_path = Path.home()
-        sub_path = "tmp/deb"
-        try:
-            filesize = int(requests.head(url).headers["Content-Length"])
-        except ConnectionError:
-            print("[ERROR]: No internet connection")
-            return 1
-        filename = os.path.basename(url)
-        try:
-            os.makedirs(os.path.join(home_path, sub_path), exist_ok=True)
-        except OSError as error:
-            print(error)
-            raise
-        dl_path = os.path.join(home_path, sub_path, filename)
-        # print(dl_path)
-        chunk_size = 1024
+        if resp['status']:
+            pkg = resp['data']['Name']
+            version = resp['data']['Version']
+            url = resp['data']['url']
 
-        try:
-            with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
-                    unit="B",  # unit string to be displayed.
-                    unit_scale=True,  # let tqdm to determine the scale in kilo, mega..etc.
-                    unit_divisor=1024,  # is used when unit_scale is true
-                    total=filesize,  # the total iteration.
-                    file=sys.stdout,  # default goes to stderr, this is the display on console.
-                    desc=filename  # prefix to be displayed on progress bar.
-            ) as progress:
-                for chunk in r.iter_content(chunk_size=chunk_size):
-                    datasize = f.write(chunk)
-                    progress.update(datasize)
+            home_path = Path.home()
+            sub_path = "tmp/deb"
+            try:
+                filesize = int(requests.head(url).headers["Content-Length"])
+            except ConnectionError:
+                print("[ERROR]: No internet connection")
+                return 1
+            filename = os.path.basename(url)
+            try:
+                os.makedirs(os.path.join(home_path, sub_path), exist_ok=True)
+            except OSError as error:
+                print(error)
+                raise
+            dl_path = os.path.join(home_path, sub_path, filename)
+            chunk_size = 1024
 
-            if os.geteuid() == 0:
-                os.system(f"dpkg -i {dl_path}") 
-            else:
-                os.system(f"sudo dpkg -i {dl_path}")
+            try:
+                with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
+                        unit="B",  # unit string to be displayed.
+                        unit_scale=True,  # let tqdm to determine the scale in kilo, mega..etc.
+                        unit_divisor=1024,  # is used when unit_scale is true
+                        total=filesize,  # the total iteration.
+                        file=sys.stdout,  # default goes to stderr, this is the display on console.
+                        desc=filename  # prefix to be displayed on progress bar.
+                ) as progress:
+                    for chunk in r.iter_content(chunk_size=chunk_size):
+                        datasize = f.write(chunk)
+                        progress.update(datasize)
 
-            yes = {'yes','y','ye',''}
-            choice = input(f"Do you want delete {filename} [Y/n]: ").lower()
-            if choice in yes:
-                try:
-                    os.remove(dl_path)
-                except OSError as error:
-                    print(error)
-        except ConnectionError:
-            return 1
-    elif resp['status'] is False:
-        message = resp['error']
-        print(f'[ERROR]: {message}')
+                if os.geteuid() == 0:
+                    os.system(f"dpkg -i {dl_path}") 
+                else:
+                    os.system(f"sudo dpkg -i {dl_path}")
+
+                yes = {'yes','y','ye',''}
+                choice = input(f"Do you want delete {filename} [Y/n]: ").lower()
+                if choice in yes:
+                    try:
+                        os.remove(dl_path)
+                    except OSError as error:
+                        print(error)
+            except ConnectionError:
+                return 1
+        elif resp['status'] is False:
+            message = resp['error']
+            print(f'[ERROR]: {message}')
+    else:
+        print(f'[ERROR]: {r.reason}')
 
 example_uses = '''example:
    deb show all
