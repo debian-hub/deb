@@ -1,5 +1,5 @@
 from setuptools import setup
-from deb import __version__
+from deb.main import __version__
 
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
@@ -18,7 +18,7 @@ setup(
     install_requires=["tqdm"],
     classifiers=[
         "Programming Language :: Python :: 3.6",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
     ],
@@ -26,7 +26,7 @@ setup(
     packages=["deb"],
     entry_points={
         "console_scripts":[
-            "deb = deb:main"
+            "deb = deb.main:main"
         ]
     },
     zip_safe=False,
