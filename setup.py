@@ -26,7 +26,8 @@ setup(
     packages=["deb"],
     entry_points={
         "console_scripts":[
-            "deb = deb.main:main"
+            "deb = deb.main:main",
+            "debi = deb:debi"
         ]
     },
     zip_safe=False,
